@@ -1,33 +1,48 @@
+import axios from "axios"
+import { useState } from "react"
+import { useEffect } from "react"
+import { useLocation } from "react-router"
+import { Link } from "react-router-dom"
 import "./singlepost.css"
 
 export default function SinglePost() {
-  return (
-    <div className="singlePost">
-        <div className="singlePostWrapper">
-            <img src="https://images.pexels.com/photos/219972/pexels-photo-219972.jpeg?cs=srgb&dl=pexels-pixabay-219972.jpg&fm=jpg" alt="" className="singlePostImg" />
-            <h1 className="singlePostTitle">
-                <span className="singlePostMainTitle">Life at Sea</span>
-                <div className="singlePostEdit">
-                    <i className="singlePostIcon far fa-edit"></i>
-                    <i className="singlePostIcon far fa-trash-alt"></i>
+    const location = useLocation()
+    const path = location.pathname.split("/")[2]
+    const [post, setPost] = useState({})
+
+    useEffect(() => {
+        const fetchPost = async () => {
+            const res = await axios.get("/post/" + path)
+            setPost(res.data)
+        }
+        fetchPost()
+    }, [path])
+    return (
+        <div className="singlePost">
+            <div className="singlePostWrapper">
+                {post.photo && <img
+                    src={post.photo}
+                    alt=""
+                    className="singlePostImg" />}
+                <h1 className="singlePostTitle">
+                    <span className="singlePostMainTitle">{post.title}</span>
+                    <div className="singlePostEdit">
+                        <i className="singlePostIcon far fa-edit"></i>
+                        <i className="singlePostIcon far fa-trash-alt"></i>
+                    </div>
+                </h1>
+                <div className="singlePostInfo">
+                    <span className="singlePostAuthor">Author:
+                        <Link to={`/posts?user=${post.username}`} className="link">
+                            <b className="singlePostAuthorName">{post.username}</b>
+                        </Link>
+                    </span>
+                    <span className="singlePostDate">{new Date(post.createdAt).toDateString} </span>
                 </div>
-            </h1>
-            <div className="singlePostInfo">
-                <span className="singlePostAuthor">Author: <b className="singlePostAuthorName">Aqib Khan</b></span>
-                <span className="singlePostDate"> 1 hour ago </span>
+                <p className="singlePostDesc">
+                    {post.desc}
+                </p>
             </div>
-            <p className="singlePostDesc">
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod molestias facere nemo repellat enim quo deleniti iure voluptate molestiae quia beatae, cupiditate eveniet corrupti cumque, mollitia non vero aut eligendi?
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod molestias facere nemo repellat enim quo deleniti iure voluptate molestiae quia beatae, cupiditate eveniet corrupti cumque, mollitia non vero aut eligendi?
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod molestias facere nemo repellat enim quo deleniti iure voluptate molestiae quia beatae, cupiditate eveniet corrupti cumque, mollitia non vero aut eligendi?
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod molestias facere nemo repellat enim quo deleniti iure voluptate molestiae quia beatae, cupiditate eveniet corrupti cumque, mollitia non vero aut eligendi?
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod molestias facere nemo repellat enim quo deleniti iure voluptate molestiae quia beatae, cupiditate eveniet corrupti cumque, mollitia non vero aut eligendi?
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod molestias facere nemo repellat enim quo deleniti iure voluptate molestiae quia beatae, cupiditate eveniet corrupti cumque, mollitia non vero aut eligendi?
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod molestias facere nemo repellat enim quo deleniti iure voluptate molestiae quia beatae, cupiditate eveniet corrupti cumque, mollitia non vero aut eligendi?
-                Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quod molestias facere nemo repellat enim quo deleniti iure voluptate molestiae quia beatae, cupiditate eveniet corrupti cumque, mollitia non vero aut eligendi?
-                
-            </p>
         </div>
-    </div>
-  )
+    )
 }
